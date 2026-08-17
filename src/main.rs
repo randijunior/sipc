@@ -11,6 +11,8 @@ use uuid::Uuid;
 
 use crate::cli::Cli;
 
+use clap::{crate_name, crate_version};
+
 mod cli;
 
 struct Logger;
@@ -101,6 +103,7 @@ fn build_headers(target: &uri::Uri) -> headers::Headers {
     let cseq = headers::CSeq::new(1, method::SipMethod::Options);
     let call_id = headers::CallId::new(format!("{}@{}", Uuid::new_v4(), host));
     let max_forwards = headers::MaxForwards::new(70);
+    let user_agent = headers::UserAgent(format!("{} {}", crate_name!(), crate_version!()));
 
     let headers = rssip::headers! {
         Header::Via(via),
@@ -109,6 +112,7 @@ fn build_headers(target: &uri::Uri) -> headers::Headers {
         Header::CallId(call_id),
         Header::CSeq(cseq),
         Header::MaxForwards(max_forwards),
+        Header::UserAgent(user_agent)
     };
 
     headers
