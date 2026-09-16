@@ -1,7 +1,7 @@
 use clap::Parser;
 use rssip::{
     Endpoint, IncomingResponse, OutgoingRequest,
-    endpoint::{self, ToTake},
+    endpoint::{self, Takeable},
     message::{Request, headers, method, uri},
     transaction::{ClientTransaction, TsxPlugin},
 };
@@ -23,10 +23,10 @@ impl endpoint::Plugin for Logger {
         "logger"
     }
 
-    async fn on_outgoing_request(&self, req: &mut OutgoingRequest) {
+    async fn outgoing_request(&self, req: &mut OutgoingRequest) {
         println!("{}{}", req.req_line, req.headers);
     }
-    async fn on_incoming_response(&self, res: ToTake<'_, IncomingResponse>, _endpoint: &Endpoint) {
+    async fn incoming_response(&self, res: Takeable<'_, IncomingResponse>, _endpoint: &Endpoint) {
         println!("{}{}", res.status_line, res.headers);
     }
 }
